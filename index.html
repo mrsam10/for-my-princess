@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>For my princess 💖</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+/* =========================
+   RESET & BASE
+========================= */
+* {
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Poppins', Arial, sans-serif;
+}
+
+body{
+    height:100vh;
+    width:100vw;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background: radial-gradient(circle at top, #ff9ab3, #ff4d6d);
+}
+
+/* =========================
+   FLOATING HEARTS
+========================= */
+.heart {
+    position:absolute;
+    font-size:14px;
+    opacity:0.3;
+    animation: float 10s linear infinite;
+}
+
+@keyframes float {
+    0% { transform: translateY(110vh) scale(1); opacity:0; }
+    100% { transform: translateY(-10vh) scale(1.5); opacity:0.6; }
+}
+
+/* =========================
+   CARD
+========================= */
+.card {
+    width:90vw;
+    max-width:360px;
+    max-height:90vh;
+    background:white;
+    padding:20px;
+    border-radius:28px;
+    text-align:center;
+    position:relative;
+    z-index:10;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    box-shadow:0 20px 50px rgba(0,0,0,0.25),0 0 60px rgba(255,77,109,0.5);
+}
+
+.card::before {
+    content:"";
+    position:absolute;
+    inset:-10px;
+    border-radius:35px;
+    background:linear-gradient(45deg,#ff4d6d,#ff9ab3,#ffd6e0);
+    filter:blur(25px);
+    z-index:-1;
+}
+
+/* =========================
+   VIDEO
+========================= */
+.video-box {
+    width:70%;
+    max-width:220px;
+    aspect-ratio:1;
+    margin:0 auto 12px;
+    border-radius:20px;
+    overflow:hidden;
+    box-shadow:0 10px 25px rgba(255,77,109,0.6);
+    animation: softPulse 4s infinite;
+}
+
+.video-box video {
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:20px;
+}
+
+@keyframes softPulse {
+    0%{transform:scale(1);}
+    50%{transform:scale(1.03);}
+    100%{transform:scale(1);}
+}
+
+/* =========================
+   TEXT
+========================= */
+h1 {
+    font-size:18px;
+    color:#ff4d6d;
+    margin-bottom:8px;
+}
+
+.subtitle {
+    font-size:14px;
+    color:#666;
+    margin-bottom:18px;
+    line-height:1.4;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+.buttons {
+    position:relative;
+    height:60px;
+}
+
+button {
+    position:absolute;
+    padding:10px 24px;
+    font-size:14px;
+    border:none;
+    border-radius:25px;
+    cursor:pointer;
+    transition:0.25s ease;
+}
+
+/* YES */
+#yes {
+    left:10px;
+    bottom:0;
+    background:#ff4d6d;
+    color:white;
+    box-shadow:0 8px 20px rgba(255,77,109,0.6);
+    animation: yesPulse 2.5s infinite;
+}
+
+@keyframes yesPulse {
+    0%{transform:scale(1);}
+    50%{transform:scale(1.1);}
+    100%{transform:scale(1);}
+}
+
+/* NO */
+#no {
+    right:10px;
+    bottom:0;
+    background:#e0e0e0;
+    color:#444;
+}
+
+/* =========================
+   MESSAGE
+========================= */
+.message {
+    margin-top:15px;
+    font-size:18px;
+    font-weight:600;
+    color:#ff4d6d;
+    line-height:1.3;
+}
+
+/* =========================
+   FIREWORK CANVAS
+========================= */
+canvas {
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    pointer-events:none;
+    z-index:5;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="fireworks"></canvas>
+
+<!-- Floating hearts -->
+<script>
+for(let i=0;i<35;i++){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerHTML="💖";
+    h.style.left=Math.random()*100+"vw";
+    h.style.animationDuration=5+Math.random()*5+"s";
+    h.style.fontSize=10+Math.random()*18+"px";
+    document.body.appendChild(h);
+}
+</script>
+
+<div class="card">
+
+    <div class="video-box">
+        <video autoplay muted loop playsinline>
+            <source src="vrequest.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <h1>Will you be my Valentine,<br>Princess Maty? 💖</h1>
+
+    <div class="subtitle">
+        Your kindness, your beauty, your intelligence, and your heart… everything about you is perfect. 
+        You deserve all the happiness in the world, and I promise to cherish you forever. 💕
+        I don’t promise perfection…  
+        I promise effort, loyalty, and a heart  
+        that chose you without hesitation 🥹💘<br>
+        LOVE YOU PRINCESS 💖
+    </div>
+
+    <div class="buttons">
+        <button id="yes">YES 💕</button>
+        <button id="no">NO 🙅‍♀️</button>
+    </div>
+
+    <div class="message" id="message"></div>
+</div>
+
+<script>
+/* =========================
+   NO BUTTON ESCAPE (fixé dans la carte)
+========================= */
+const noBtn = document.getElementById("no");
+const card = document.querySelector(".card");
+
+function moveNo() {
+    const rect = noBtn.getBoundingClientRect();
+    const cardRect = card.getBoundingClientRect();
+    
+    // position max à l'intérieur de la carte
+    const maxX = cardRect.width - rect.width;
+    const maxY = cardRect.height - rect.height;
+
+    const newX = Math.random() * maxX;
+    const newY = Math.random() * maxY;
+
+    noBtn.style.left = newX + "px";
+    noBtn.style.top = newY + "px";
+}
+
+// Sur PC, quand la souris approche
+document.addEventListener("mousemove",(e)=>{
+    const rect = noBtn.getBoundingClientRect();
+    const dx = e.clientX-(rect.left+rect.width/2);
+    const dy = e.clientY-(rect.top+rect.height/2);
+    const distance = Math.sqrt(dx*dx+dy*dy);
+    if(distance<100){
+        moveNo();
+    }
+});
+
+// Sur mobile (toucher)
+noBtn.addEventListener("touchstart", moveNo);
+
+/* =========================
+   FIREWORK SYSTEM
+========================= */
+const canvas=document.getElementById("fireworks");
+const ctx=canvas.getContext("2d");
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+let particles=[];
+
+function firework(){
+    const x=canvas.width/2;
+    const y=canvas.height/3;
+    for(let i=0;i<100;i++){
+        particles.push({
+            x,y,
+            angle:Math.random()*Math.PI*2,
+            speed:Math.random()*5+2,
+            alpha:1,
+            color:`hsl(${Math.random()*360},100%,60%)`
+        });
+    }
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particles.forEach((p,i)=>{
+        p.x+=Math.cos(p.angle)*p.speed;
+        p.y+=Math.sin(p.angle)*p.speed;
+        p.alpha-=0.01;
+        ctx.globalAlpha=p.alpha;
+        ctx.fillStyle=p.color;
+        ctx.beginPath();
+        ctx.arc(p.x,p.y,2,0,Math.PI*2);
+        ctx.fill();
+        if(p.alpha<=0) particles.splice(i,1);
+    });
+    ctx.globalAlpha=1;
+    requestAnimationFrame(animate);
+}
+animate();
+
+/* =========================
+   YES BUTTON ACTION
+========================= */
+const yesBtn=document.getElementById("yes");
+const message=document.getElementById("message");
+
+yesBtn.addEventListener("click",()=>{
+    message.innerHTML=`
+        Ofc yes i'm your husband<br>
+        my heart aslo will choose you every single day ✨<br>
+        You deserve all the happiness in the world, Princess 💕
+    `;
+    for(let i=0;i<6;i++){
+        setTimeout(firework,i*400);
+    }
+});
+</script>
+
+</body>
+</html>
